@@ -167,7 +167,7 @@ public class GameLogic extends UniversalAdapter {
                 int newX = nextX + offset[0];
                 int newY = nextY + offset[1];
                 nextPipe.setCheck(true);
-                if (newX < 0 || newY < 0 || newX > 7 || newY > 7 || pipes[newX][newY].isVisited()) {
+                if (newX < 0 || newY < 0 || newX > this.currentBoardSize-1 || newY > this.currentBoardSize-1 || pipes[newX][newY].isVisited()) {
                     return;
                 }
                 nextPipe.setEnd(dir);
@@ -217,6 +217,11 @@ public class GameLogic extends UniversalAdapter {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
         Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
         if (!(current instanceof Tile)) {
             return;
