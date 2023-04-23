@@ -119,14 +119,19 @@ public class GameLogic extends UniversalAdapter {
         int nextX = x;
         int nextY = y;
 
-        if (direction == Direction.UP) {
-            nextY++;
-        } else if (direction == Direction.DOWN) {
-            nextY--;
-        } else if (direction == Direction.LEFT) {
-            nextX--;
-        } else if (direction == Direction.RIGHT) {
-            nextX++;
+        switch (direction) {
+            case UP:
+                nextY++;
+                break;
+            case DOWN:
+                nextY--;
+                break;
+            case LEFT:
+                nextX--;
+                break;
+            case RIGHT:
+                nextX++;
+                break;
         }
 
         if (nextX < 0 || nextX >= pipes.length || nextY < 0 || nextY >= pipes.length) {
@@ -137,43 +142,49 @@ public class GameLogic extends UniversalAdapter {
             return;
         }
 
-        if (nextPipe.getState() == State.END) {
-            if (pipes[x][y].getState() == State.STRAIGHT) {
-                if ((x < nextX || y < nextY) && pipes[x][y].getEnd().getOppositeDirection() == nextPipe.getEnd()) {
+        switch (nextPipe.getState()) {
+            case END:
+                if (pipes[x][y].getState() == State.STRAIGHT) {
+                    if ((x < nextX || y < nextY) && pipes[x][y].getEnd().getOppositeDirection() == nextPipe.getEnd()) {
+                        gameWon();
+                        return;
+                    }
+                    if (y > nextY && pipes[x][y].getEndTwo().getOppositeDirection() == nextPipe.getEnd()) {
+                        gameWon();
+                        return;
+                    }
+                } else if ((pipes[x][y].getEnd().getOppositeDirection() == nextPipe.getEnd()) || (pipes[x][y].getEndTwo().getOppositeDirection() == nextPipe.getEnd())) {
                     gameWon();
                     return;
                 }
-                if (y > nextY && pipes[x][y].getEndTwo().getOppositeDirection() == nextPipe.getEnd()) {
-                    gameWon();
-                    return;
-                }
-            } else if ((pipes[x][y].getEnd().getOppositeDirection() == nextPipe.getEnd()) || (pipes[x][y].getEndTwo().getOppositeDirection() == nextPipe.getEnd())) {
-                gameWon();
-                return;
-            }
+                break;
+
+            case STRAIGHT:
+                if (pipes[x][y].getEnd().getOppositeDirection() == nextPipe.getEnd()) {
+                    nextPipe.setCheck(true);
+                    nextPipe.setEnd(nextPipe.getEndTwo());
+                } else if (pipes[x][y].getEnd().getOppositeDirection() == nextPipe.getEndTwo()) {
+                    nextPipe.setCheck(true);
+                    nextPipe.setEnd(nextPipe.getEnd());
+                } else return;
+                break;
+
+            case BENT:
+                Direction endOpposite = pipes[x][y].getEnd().getOppositeDirection();
+                if (endOpposite == nextPipe.getEnd() || endOpposite == nextPipe.getEndTwo()) {
+                    Direction dir = (endOpposite == nextPipe.getEnd()) ? nextPipe.getEndTwo() : nextPipe.getEnd();
+                    int[] offset = dir.getOffset();
+                    int newX = nextX + offset[0];
+                    int newY = nextY + offset[1];
+                    nextPipe.setCheck(true);
+                    if (newX < 0 || newY < 0 || newX > this.currentBoardSize - 1 || newY > this.currentBoardSize - 1 || pipes[newX][newY].isVisited()) {
+                        return;
+                    }
+                    nextPipe.setEnd(dir);
+                } else return;
+                break;
         }
-        if (nextPipe.getState() == State.STRAIGHT) {
-            if (pipes[x][y].getEnd().getOppositeDirection() == nextPipe.getEnd()) {
-                nextPipe.setCheck(true);
-                nextPipe.setEnd(nextPipe.getEndTwo());
-            } else if (pipes[x][y].getEnd().getOppositeDirection() == nextPipe.getEndTwo()) {
-                nextPipe.setCheck(true);
-                nextPipe.setEnd(nextPipe.getEnd());
-            } else return;
-        } else if (nextPipe.getState() == State.BENT) {
-            Direction endOpposite = pipes[x][y].getEnd().getOppositeDirection();
-            if (endOpposite == nextPipe.getEnd() || endOpposite == nextPipe.getEndTwo()) {
-                Direction dir = (endOpposite == nextPipe.getEnd()) ? nextPipe.getEndTwo() : nextPipe.getEnd();
-                int[] offset = dir.getOffset();
-                int newX = nextX + offset[0];
-                int newY = nextY + offset[1];
-                nextPipe.setCheck(true);
-                if (newX < 0 || newY < 0 || newX > this.currentBoardSize - 1 || newY > this.currentBoardSize - 1 || pipes[newX][newY].isVisited()) {
-                    return;
-                }
-                nextPipe.setEnd(dir);
-            } else return;
-        }
+
         checkPath(pipes, nextX, nextY);
     }
 
