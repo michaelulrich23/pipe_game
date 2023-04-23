@@ -1,0 +1,50 @@
+package sk.stuba.fei.uim.oop.tile;
+
+import sk.stuba.fei.uim.oop.board.State;
+
+import java.awt.*;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class StartEnd extends Tile{
+    private boolean isStart;
+
+    public StartEnd(State state) {
+        super(state);
+        if(state.equals(State.START)){
+            this.isStart = true;
+        }
+        this.angle = ThreadLocalRandom.current().nextInt(0, 4) * 90;
+    }
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if(this.isStart){
+            g.setColor(Color.GREEN);
+        }
+        else{
+            g.setColor(Color.RED);
+        }
+
+        int[] xPoints = {this.getWidth()/2, this.getWidth()/2, this.getWidth(), this.getWidth()};
+        int[] yPoints = {this.getHeight()/3, this.getHeight()*2/3, this.getHeight()*2/3, this.getHeight()/3};
+
+        int[][] result = convertingPoints(xPoints, yPoints);
+
+        g.fillPolygon(result[0], result[1], 4);
+        if(this.check && this.isStart){
+            g.setColor(Color.BLUE);
+            int[] xPointsWater = {this.getWidth()/2, this.getWidth()/2, this.getWidth(), this.getWidth()};
+            int[] yPointsWater = {this.getHeight()*4/9, this.getHeight()*5/9, this.getHeight()*5/9, this.getHeight()*4/9};
+            int[][] resultWater = convertingPoints(xPointsWater, yPointsWater);
+            g.fillPolygon(resultWater[0], resultWater[1], 4);
+        }
+
+        this.setEnd(this.state.getDirections(this.angle));
+    }
+
+    public void rotateTile(){
+        this.angle += 90;
+        this.angle = this.angle % 360;
+    }
+
+}
