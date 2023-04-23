@@ -23,15 +23,22 @@ public enum Direction {
     public int[] getOffset() {
         int xOffset = 0;
         int yOffset = 0;
-        if (this == Direction.UP) {
-            yOffset = 1;
-        } else if (this == Direction.DOWN) {
-            yOffset = -1;
-        } else if (this == Direction.LEFT) {
-            xOffset = -1;
-        } else if (this == Direction.RIGHT) {
-            xOffset = 1;
+
+        switch (this) {
+            case UP:
+                yOffset = 1;
+                break;
+            case DOWN:
+                yOffset = -1;
+                break;
+            case LEFT:
+                xOffset = -1;
+                break;
+            case RIGHT:
+                xOffset = 1;
+                break;
         }
+
         return new int[]{xOffset, yOffset};
     }
 
