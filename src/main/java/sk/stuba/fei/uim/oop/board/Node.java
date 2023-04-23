@@ -22,7 +22,7 @@ public class Node extends JPanel {
     @Setter
     private Direction exit;
 
-    public Node(int x, int y){
+    public Node(int x, int y) {
         this.xPos = x;
         this.yPos = y;
         this.isEnd = false;

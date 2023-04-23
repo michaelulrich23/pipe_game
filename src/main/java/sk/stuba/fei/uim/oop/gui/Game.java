@@ -10,7 +10,7 @@ public class Game {
     public Game() {
         JFrame frame = new JFrame("Waterpipes");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800,900);
+        frame.setSize(800, 900);
         frame.getContentPane().setBackground(Color.GRAY);
         frame.setResizable(false);
         frame.setFocusable(true);
@@ -39,7 +39,7 @@ public class Game {
         slider.addChangeListener(logic);
 
         sideMenu.setLayout(new GridLayout(2, 2));
-        buttonMenu.setLayout(new GridLayout(1,2));
+        buttonMenu.setLayout(new GridLayout(1, 2));
         sideMenu.add(logic.getLabel());
         buttonMenu.add(buttonRestart);
         buttonMenu.add(buttonCheck);

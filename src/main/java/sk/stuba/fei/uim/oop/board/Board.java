@@ -16,13 +16,13 @@ public class Board extends JPanel {
     private Node[][] nodes;
     private Tile[][] tiles;
 
-    public Board(int dimension){
+    public Board(int dimension) {
         this.initializeBoard(dimension);
         this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
         this.setBackground(Color.GRAY);
     }
 
-    public void initializeBoard(int dimension){
+    public void initializeBoard(int dimension) {
         this.nodes = new Node[dimension][dimension];
         this.tiles = new Tile[dimension][dimension];
         this.setLayout(new GridLayout(dimension, dimension));
@@ -36,25 +36,25 @@ public class Board extends JPanel {
         generateRoute(dimension);
     }
 
-    public void generateRoute(int dimension){
+    public void generateRoute(int dimension) {
         int startX = 0;
         int startY = ThreadLocalRandom.current().nextInt(0, dimension);
         int endX = dimension - 1;
         int endY = ThreadLocalRandom.current().nextInt(0, dimension);
 
         for (int i = 0; i < dimension; i++) {
-            for (int j = 0; j < dimension; j++)  {
+            for (int j = 0; j < dimension; j++) {
                 if (i != 0) {
-                    this.nodes[i][j].addNeighbour(this.nodes[i-1][j]);
+                    this.nodes[i][j].addNeighbour(this.nodes[i - 1][j]);
                 }
                 if (i != dimension - 1) {
-                    this.nodes[i][j].addNeighbour(this.nodes[i+1][j]);
+                    this.nodes[i][j].addNeighbour(this.nodes[i + 1][j]);
                 }
                 if (j != 0) {
-                    this.nodes[i][j].addNeighbour(this.nodes[i][j-1]);
+                    this.nodes[i][j].addNeighbour(this.nodes[i][j - 1]);
                 }
                 if (j != dimension - 1) {
-                    this.nodes[i][j].addNeighbour(this.nodes[i][j+1]);
+                    this.nodes[i][j].addNeighbour(this.nodes[i][j + 1]);
                 }
             }
         }
@@ -72,14 +72,13 @@ public class Board extends JPanel {
 
     public void convertToTiles(ArrayList<Node> path) {
         for (Node node : path) {
-            if(node.getEnter() == null || node.getExit() == null){
+            if (node.getEnter() == null || node.getExit() == null) {
                 continue;
             }
 
-            if(this.nodes[node.getXPos()][node.getYPos()].getEnter().getOppositeDirection() == this.nodes[node.getXPos()][node.getYPos()].getExit()){
+            if (this.nodes[node.getXPos()][node.getYPos()].getEnter().getOppositeDirection() == this.nodes[node.getXPos()][node.getYPos()].getExit()) {
                 this.tiles[node.getXPos()][node.getYPos()] = new StraightPipe(State.STRAIGHT);
-            }
-            else {
+            } else {
                 this.tiles[node.getXPos()][node.getYPos()] = new LPipe(State.BENT);
             }
         }
@@ -91,16 +90,16 @@ public class Board extends JPanel {
         }
     }
 
-    public ArrayList<Node> dfs(Node currentNode, ArrayList<Node> path){
+    public ArrayList<Node> dfs(Node currentNode, ArrayList<Node> path) {
         currentNode.setVisited(true);
         path.add(currentNode);
 
-        if(currentNode.isEnd()){
+        if (currentNode.isEnd()) {
             return path;
         }
 
-        for(Node neighbor : currentNode.getNeighbors()){
-            if(!neighbor.isVisited()){
+        for (Node neighbor : currentNode.getNeighbors()) {
+            if (!neighbor.isVisited()) {
                 Direction exitDirection = getDirection(currentNode, neighbor);
                 Direction enterDirection = getDirection(neighbor, currentNode);
 
@@ -108,7 +107,7 @@ public class Board extends JPanel {
                 neighbor.setEnter(enterDirection);
 
                 ArrayList<Node> result = dfs(neighbor, path);
-                if(result != null){
+                if (result != null) {
                     return result;
                 }
             }
@@ -118,7 +117,7 @@ public class Board extends JPanel {
         return null;
     }
 
-    public Direction getDirection(Node currentNode, Node neighbor){
+    public Direction getDirection(Node currentNode, Node neighbor) {
         int dx = neighbor.getXPos() - currentNode.getXPos();
         int dy = neighbor.getYPos() - currentNode.getYPos();
         Direction direction = null;
@@ -133,7 +132,6 @@ public class Board extends JPanel {
         }
         return direction;
     }
-
 
 
 }

@@ -43,7 +43,8 @@ public class GameLogic extends UniversalAdapter {
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        if(this.currentBoardSize == ((JSlider) e.getSource()).getValue()){
+        if (e == null || ((JSlider) e.getSource()).getValue() > 10 || ((JSlider) e.getSource()).getValue() < 8) return;
+        if (this.currentBoardSize == ((JSlider) e.getSource()).getValue()) {
             return;
         }
         this.currentBoardSize = ((JSlider) e.getSource()).getValue();
@@ -53,7 +54,7 @@ public class GameLogic extends UniversalAdapter {
         this.mainGame.requestFocus();
     }
 
-    public void gameWon() {
+    private void gameWon() {
         this.mainGame.remove(this.currentBoard);
         this.initializeBoard(this.currentBoardSize);
         this.mainGame.add(this.currentBoard);
@@ -91,10 +92,10 @@ public class GameLogic extends UniversalAdapter {
         this.mainGame.repaint();
     }
 
-    private void check(){
+    private void check() {
         int startIndex = 0;
         for (int i = 0; i < this.currentBoard.getTiles().length; i++) {
-            if(this.currentBoard.getTiles()[0][i] instanceof StartEnd) {
+            if (this.currentBoard.getTiles()[0][i] instanceof StartEnd) {
                 startIndex = i;
                 this.currentBoard.getTiles()[0][i].setCheck(true);
             }
@@ -108,7 +109,7 @@ public class GameLogic extends UniversalAdapter {
     }
 
     private void checkPath(Tile[][] pipes, int x, int y) {
-        if(pipes[x][y] == null){
+        if (pipes[x][y] == null) {
             return;
         }
 
@@ -146,16 +147,16 @@ public class GameLogic extends UniversalAdapter {
                     gameWon();
                     return;
                 }
-            } else if ((pipes[x][y].getEnd().getOppositeDirection() == nextPipe.getEnd()) || (pipes[x][y].getEndTwo().getOppositeDirection() == nextPipe.getEnd())){
+            } else if ((pipes[x][y].getEnd().getOppositeDirection() == nextPipe.getEnd()) || (pipes[x][y].getEndTwo().getOppositeDirection() == nextPipe.getEnd())) {
                 gameWon();
                 return;
             }
         }
         if (nextPipe.getState() == State.STRAIGHT) {
-            if(pipes[x][y].getEnd().getOppositeDirection() == nextPipe.getEnd()){
+            if (pipes[x][y].getEnd().getOppositeDirection() == nextPipe.getEnd()) {
                 nextPipe.setCheck(true);
                 nextPipe.setEnd(nextPipe.getEndTwo());
-            } else if(pipes[x][y].getEnd().getOppositeDirection() == nextPipe.getEndTwo()){
+            } else if (pipes[x][y].getEnd().getOppositeDirection() == nextPipe.getEndTwo()) {
                 nextPipe.setCheck(true);
                 nextPipe.setEnd(nextPipe.getEnd());
             } else return;
@@ -167,12 +168,11 @@ public class GameLogic extends UniversalAdapter {
                 int newX = nextX + offset[0];
                 int newY = nextY + offset[1];
                 nextPipe.setCheck(true);
-                if (newX < 0 || newY < 0 || newX > this.currentBoardSize-1 || newY > this.currentBoardSize-1 || pipes[newX][newY].isVisited()) {
+                if (newX < 0 || newY < 0 || newX > this.currentBoardSize - 1 || newY > this.currentBoardSize - 1 || pipes[newX][newY].isVisited()) {
                     return;
                 }
                 nextPipe.setEnd(dir);
-            }
-            else return;
+            } else return;
         }
         checkPath(pipes, nextX, nextY);
     }
@@ -180,7 +180,7 @@ public class GameLogic extends UniversalAdapter {
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton b = (JButton) e.getSource();
-        switch(b.getText()){
+        switch (b.getText()) {
             case RESTART:
                 this.gameRestart();
                 break;
@@ -207,6 +207,7 @@ public class GameLogic extends UniversalAdapter {
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        if (e == null) return;
         Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
         if (!(current instanceof Tile)) {
             return;
@@ -217,17 +218,18 @@ public class GameLogic extends UniversalAdapter {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        if (e == null) return;
         Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
         if (!(current instanceof Tile)) {
             return;
         }
-        if(current instanceof StartEnd){
+        if (current instanceof StartEnd) {
             ((StartEnd) current).rotateTile();
         }
-        if(current instanceof StraightPipe){
+        if (current instanceof StraightPipe) {
             ((StraightPipe) current).rotateTile();
         }
-        if(current instanceof LPipe){
+        if (current instanceof LPipe) {
             ((LPipe) current).rotateTile();
         }
         for (int i = 0; i < this.currentBoard.getTiles().length; i++) {

@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
+
 import sk.stuba.fei.uim.oop.board.Direction;
 import sk.stuba.fei.uim.oop.board.State;
 
@@ -14,17 +15,20 @@ public class Tile extends JPanel {
     protected double angle;
     @Getter
     protected State state;
-    @Getter @Setter
+    @Getter
+    @Setter
     protected Direction end;
-    @Getter @Setter
+    @Getter
+    @Setter
     protected Direction endTwo;
-    @Setter @Getter
+    @Setter
+    @Getter
     protected boolean visited;
     @Setter
     protected boolean check;
 
 
-    public Tile(State state){
+    public Tile(State state) {
         this.highlight = false;
         this.angle = 0;
         this.state = state;
@@ -51,17 +55,17 @@ public class Tile extends JPanel {
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if(highlight){
+        if (highlight) {
             g.setColor(Color.BLUE);
             ((Graphics2D) g).setStroke(new BasicStroke(5));
-            g.drawRect(2,2,this.getWidth() - 4, this.getHeight() - 4);
+            g.drawRect(2, 2, this.getWidth() - 4, this.getHeight() - 4);
             highlight = false;
         }
     }
 
-    protected int[][] convertingPoints(int[] xPoints, int[] yPoints){
+    protected int[][] convertingPoints(int[] xPoints, int[] yPoints) {
         Point location = new Point();
-        location.setLocation(getWidth()/2, getHeight()/2);
+        location.setLocation(getWidth() / 2, getHeight() / 2);
         Point[] point = new Point[xPoints.length];
 
         for (int i = 0; i < xPoints.length; i++) {
