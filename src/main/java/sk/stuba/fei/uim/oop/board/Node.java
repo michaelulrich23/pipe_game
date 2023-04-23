@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -29,8 +28,6 @@ public class Node extends JPanel {
         this.visited = false;
         this.enter = null;
         this.exit = null;
-        this.setBorder(BorderFactory.createLineBorder(Color.black));
-        this.setBackground(Color.LIGHT_GRAY);
         this.neighbours = new ArrayList<>();
     }
 
